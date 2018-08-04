@@ -11,7 +11,7 @@ class Result extends React.Component {
 
 class ResultsTable extends React.Component {
   render() {
-    let searchResults = results.map((result, index) => (
+    let searchResults = this.props.keyWord.map((result, index) => (
       <Result key={index} name={result.show.name} img={result.show.image.medium} />
     ))
     return(
@@ -38,12 +38,22 @@ class SearchBar extends React.Component {
   }
 
   handleClick = () => {
+    let searchResults = [];
     let inputValue = this.state.input;
     if (inputValue.length < 1) {
       alert("Please enter a task!");
       return;
     } else {
-      this.setState({input: inputValue, results: true}, ()=>{console.log(this.state)});
+      for (let i = 0; i < results.length; i++) {
+        if(results[i].show.name.toLowerCase().includes(inputValue.toLowerCase())){
+          searchResults.push(results[i]);
+        }else{
+          console.log(inputValue);
+          alert("No such title!");
+          return;
+        }
+      }
+      this.setState({input: "", results: true, searchValue: searchResults}, ()=>{console.log(this.state)});
     }
   }
 
@@ -55,7 +65,7 @@ class SearchBar extends React.Component {
   render() {
     let showResults;
     if (this.state.results) {
-      showResults = <ResultsTable />
+      showResults = <ResultsTable keyWord={this.state.searchValue} />
     }else{
       showResults = <div><p>Nothing was searched.</p></div>
     }
