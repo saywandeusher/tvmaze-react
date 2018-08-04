@@ -1,14 +1,22 @@
 class Result extends React.Component {
   render() {
-
+    return (
+      <div className="result" style={{'display': 'inline-block'}}>
+        <img src={this.props.img}/>
+        <p>{this.props.name}</p>
+      </div>
+    );
   }
 }
 
 class ResultsTable extends React.Component {
   render() {
+    let searchResults = results.map((result, index) => (
+      <Result key={index} name={result.show.name} img={result.show.image.medium} />
+    ))
     return(
       <div className="resultsTable">
-        <h1>Your results!</h1>
+        {searchResults}
       </div>
     );
   }
@@ -17,21 +25,19 @@ class ResultsTable extends React.Component {
 class SearchBar extends React.Component {
   constructor(props){
     super(props)
-    this.inputHandler = this.inputHandler.bind(this);
-    this.handleClick = this.handleClick.bind(this);
     this.state = {
       input : "",
       results : false
     }
   }
 
-  inputHandler(event){
+  inputHandler = (event) => {
     let inputValue = event.target.value;
     this.setState({input:inputValue});
     console.log(inputValue);
   }
 
-  handleClick(){
+  handleClick = () => {
     let inputValue = this.state.input;
     if (inputValue.length < 1) {
       alert("Please enter a task!");
@@ -39,6 +45,11 @@ class SearchBar extends React.Component {
     } else {
       this.setState({input: inputValue, results: true}, ()=>{console.log(this.state)});
     }
+  }
+
+  handleSubmit = (event) => {
+    this.handleClick();
+    event.preventDefault()
   }
 
   render() {
@@ -50,9 +61,9 @@ class SearchBar extends React.Component {
     }
 
     return (
-      <div className="search">
-        <form>
-          <input onChange={this.inputHandler} value={this.state.input} onSubmit={this.handleClick} placeholder="Enter a Movie Title..." />
+      <div className="searchBar">
+        <form onSubmit={this.handleSubmit}>
+          <input onChange={this.inputHandler} value={this.state.input} placeholder="Enter a Movie Title..." />
           <br />
           <button type="button" onClick={this.handleClick}>search</button>
         </form>
